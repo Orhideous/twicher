@@ -1,4 +1,5 @@
 Flask
+Flask-Assets
 Jinja2
 MarkupSafe
 Werkzeug
