@@ -107,3 +107,5 @@ target/
 
 static/dist/
 static/.webassets-cache/
+
+*.sqlite
