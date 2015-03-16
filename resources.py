@@ -12,13 +12,13 @@ class QuotesList(Resource):
 
 class Quote(Resource):
 
-    def get(self):
+    def get(self, quote_id):
         pass
 
-    def put(self):
+    def put(self, quote_id):
         pass
 
-    def delete(self):
+    def delete(self, quote_id):
         pass
 
 
