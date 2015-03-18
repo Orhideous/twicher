@@ -15,7 +15,7 @@ manager = Manager(app)
 COLORS = {
     'BLUE': '\033[94m',
     'GREEN': '\033[92m',
-    'WARNING': '\033[93m',
+    'ORANGE': '\033[93m',
     'RED': '\033[91m',
     'END': '\033[0m',
     'BOLD': '\033[1m',
@@ -67,17 +67,6 @@ def init_db():
     help="html-file with quotes"
 )
 def load_quotes(file):
-    bar = pb.ProgressBar(widgets=[
-        'Processed: ',
-        pb.Counter(),
-        ' quotes (',
-        pb.AdaptiveETA(),
-        ') ',
-        pb.Percentage(),
-        ' ',
-        pb.Bar()
-    ])
-
     with perform(
             "Import",
             "Parsing quotes from '{file}'",
@@ -96,6 +85,11 @@ def load_quotes(file):
             "Failed to save quotes!",
             "Done!"
     ), orm.db_session:
+        bar = pb.ProgressBar(widgets=[
+            '{ORANGE}[Saving]{END} '.format(**COLORS),
+            pb.Counter(), ' quotes ', pb.Bar(), ' ',
+            pb.Percentage()
+        ])
         for quote_text in bar(quotes):
             Quote(text=quote_text)
 
