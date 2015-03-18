@@ -2,6 +2,7 @@ Flask
 Flask-Assets
 Flask-Script
 flask-restful
+progressbar-latest
 pony
 Jinja2
 MarkupSafe
