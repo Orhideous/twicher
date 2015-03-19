@@ -24,6 +24,7 @@ api.add_resource(Random, '/quotes/twitchy')
 @app.before_first_request
 def bind_to_db():
     db.bind(app.config['DB_TYPE'], app.config['DB_NAME'], create_db=False)
+    db.generate_mapping()
 
 
 @app.route('/')

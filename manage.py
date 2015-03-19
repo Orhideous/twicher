@@ -1,47 +1,14 @@
 #!/usr/bin/env python
-from contextlib import contextmanager
-from copy import deepcopy
-
-from pony import orm
+from pony.orm import db_session
 import progressbar as pb
 from flask.ext.script import Manager
 
 from models import db, Quote
 from application import app
+from utils import perform, COLORS
 
 
 manager = Manager(app)
-
-COLORS = {
-    'BLUE': '\033[94m',
-    'GREEN': '\033[92m',
-    'ORANGE': '\033[93m',
-    'RED': '\033[91m',
-    'END': '\033[0m',
-    'BOLD': '\033[1m',
-    'UNDERLINE': '\033[4m'
-}
-
-
-@contextmanager
-def perform(name, before, fail, after, kwargs=None):
-    kwargs = deepcopy(kwargs) if kwargs else {}
-    kwargs.update(
-        COLORS,
-        name=name,
-        before=before.format(**kwargs),
-        fail=fail.format(**kwargs),
-        after=after.format(**kwargs),
-    )
-    print("{BLUE}[{name}]{END} {before}".format(**kwargs))
-    try:
-        yield
-    except Exception as e:
-        print("{RED}[{name}]{END} {fail}".format(**kwargs))
-        print("{RED}[{name}]{END} Reason: {e}".format(e=e, **kwargs))
-        exit(1)
-    else:
-        print("{GREEN}[{name}]{END} {after}".format(**kwargs))
 
 
 @manager.command
@@ -67,6 +34,8 @@ def init_db():
     help="html-file with quotes"
 )
 def load_quotes(file):
+    """Load quotes from file"""
+
     with perform(
             "Import",
             "Parsing quotes from '{file}'",
@@ -84,7 +53,7 @@ def load_quotes(file):
             "Saving quotes into database",
             "Failed to save quotes!",
             "Done!"
-    ), orm.db_session:
+    ), db_session:
         bar = pb.ProgressBar(widgets=[
             '{ORANGE}[Saving]{END} '.format(**COLORS),
             pb.Counter(), ' quotes ', pb.Bar(), ' ',
