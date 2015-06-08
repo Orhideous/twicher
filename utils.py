@@ -1,6 +1,10 @@
 from contextlib import contextmanager
 from copy import deepcopy
+from functools import wraps
 from flask.ext.restful.fields import Integer, String
+
+from pony.orm import db_session
+
 
 COLORS = {
     'BLUE': '\033[94m',
@@ -34,3 +38,11 @@ def perform(name, before, fail, after, kwargs=None):
         exit(1)
     else:
         print("{GREEN}[{name}]{END} {after}".format(**kwargs))
+
+
+def with_session(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        with db_session:
+            return func(*args, **kwargs)
+    return wrapper
