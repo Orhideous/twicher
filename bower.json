@@ -1,0 +1,22 @@
+{
+  "name": "twicher",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Orhideous/twicher",
+  "authors": [
+    "Andriy Kushnir (Orhideous) <orhideous@gmail.com>"
+  ],
+  "description": "Simple quotes editor",
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.13.3",
+    "jquery": "~2.1.4",
+    "bootstrap-stylus": "~4.0.4"
+  }
+}
