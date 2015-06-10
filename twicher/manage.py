@@ -3,10 +3,9 @@ from pony.orm import db_session
 import progressbar as pb
 from flask.ext.script import Manager
 
-from models import db, Quote
-from application import app
-from utils import perform, COLORS
-
+from twicher.models import db, Quote
+from twicher.application import app
+from twicher.utils import perform, COLORS
 
 manager = Manager(app)
 

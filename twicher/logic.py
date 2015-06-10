@@ -1,7 +1,3 @@
-from pony.orm import db_session
-from models import Quote
-
-
 def get_all():
     return []
 

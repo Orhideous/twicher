@@ -1,8 +1,8 @@
 from flask.ext.restful import Resource, marshal_with
 from flask.ext.restful.reqparse import RequestParser
 
-import logic
-from utils import quote_marshaller
+from twicher import logic
+from twicher.utils import quote_marshaller
 
 parser = RequestParser()
 parser.add_argument('text', type=str, required=True)
