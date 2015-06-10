@@ -2,19 +2,14 @@ from os import environ
 
 from flask import Flask, render_template
 from flask.ext.restful import Api
-from flask.ext.assets import Environment
 
-from assets import bundles
 from models import db
 from resources import Quote, QuotesList, Random
 
 app = Flask(__name__)
 app.config.from_object(environ.get('APP_SETTINGS', 'config.Development'))
 
-assets = Environment(app)
 api = Api(app)
-
-assets.register(bundles)
 
 api.add_resource(QuotesList, '/quotes')
 api.add_resource(Quote, '/quotes/<quote_id>')
