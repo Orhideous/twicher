@@ -130,5 +130,5 @@ node_modules
 ### Twicher
 
 *.sqlite
-twicher/static/dist
+twicher/static
 bower_components
