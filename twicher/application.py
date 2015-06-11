@@ -3,8 +3,8 @@ from os import environ
 from flask import Flask, render_template
 from flask.ext.restful import Api
 
-from twicher.models import db
-from twicher.resources import Quote, QuotesList, Random
+from models import db
+from resources import Quote, QuotesList, Random
 
 app = Flask(__name__)
 app.config.from_object(environ.get('APP_SETTINGS', 'config.Development'))
@@ -24,7 +24,7 @@ def bind_to_db():
 
 @app.route('/')
 def index():
-    return render_template("main.html")
+    return render_template("index.html")
 
 if __name__ == '__main__':
     app.run()
