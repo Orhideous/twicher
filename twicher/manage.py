@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from pony.orm import db_session
 import progressbar as pb
-from flask.ext.script import Manager
+from flask_script import Manager
 
 from models import db, Quote
 from application import app

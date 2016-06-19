@@ -1,7 +1,7 @@
 from os import environ
 
 from flask import Flask, render_template
-from flask.ext.restful import Api
+from flask_restful import Api
 
 from models import db
 from resources import Quote, QuotesList, Random

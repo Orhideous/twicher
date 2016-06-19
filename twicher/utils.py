@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 from functools import wraps
-from flask.ext.restful.fields import Integer, String
+from flask_restful.fields import Integer, String
 
 from pony.orm import db_session
 
