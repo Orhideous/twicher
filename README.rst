@@ -1,4 +1,0 @@
-Twicher
-=======
-
-Simple quotes editor
