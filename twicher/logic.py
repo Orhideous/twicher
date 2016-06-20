@@ -2,18 +2,20 @@ from models import db, Quote
 from pony import orm
 from flask import make_response, url_for, abort
 
+
 @orm.db_session
 def quote_exists(quote_id):
-    return Quote.select(lambda q: q.id==quote_id).exists()
+    return Quote.exists(id=quote_id)
+
 
 @orm.db_session
 def get_all():
     return Quote.select()[:]
 
+
 @orm.db_session
 def get_random():
-    quote = Quote.select().random(1)
-    return quote
+    return Quote.select().random(1)
 
 
 @orm.db_session
