@@ -8,6 +8,7 @@ parser = RequestParser()
 parser.add_argument('text', type=str, required=True)
 
 
+# noinspection PyMethodMayBeStatic
 class QuotesList(Resource):
 
     @marshal_with(quote_marshaller)
@@ -19,6 +20,7 @@ class QuotesList(Resource):
         return logic.create(text)
 
 
+# noinspection PyMethodMayBeStatic
 class Quote(Resource):
 
     @marshal_with(quote_marshaller)
@@ -26,7 +28,7 @@ class Quote(Resource):
         return logic.read(quote_id)
 
     @marshal_with(quote_marshaller)
-    def put(self, quote_id):
+    def post(self, quote_id):
         text = parser.parse_args().get('text', None)
         return logic.update(quote_id, text)
 
