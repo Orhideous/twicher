@@ -5,8 +5,11 @@ from utils import make_snippet
 
 
 @orm.db_session
-def quote_exists(quote_id):
-    return Quote.exists(id=quote_id)
+def get_quote_or_404(quote_id):
+    try:
+        return Quote[quote_id]
+    except orm.ObjectNotFound:
+        return abort(404)
 
 
 @orm.db_session
@@ -35,18 +38,14 @@ def create(text):
 
 @orm.db_session
 def read(quote_id):
-    if not quote_exists(quote_id):
-        abort(404)
-    return Quote[quote_id]
+    get_quote_or_404(quote_id)
 
 
 @orm.db_session
 def update(quote_id, text):
     if not text:
         abort(400)
-    if not quote_exists(quote_id):
-        abort(404)
-    quote = Quote[quote_id]
+    quote = get_quote_or_404(quote_id)
     quote.text = text
     quote.snippet = make_snippet(text)
     db.commit()
@@ -55,9 +54,7 @@ def update(quote_id, text):
 
 @orm.db_session
 def delete(quote_id):
-    if not quote_exists(quote_id):
-        abort(404)
-    quote = Quote[quote_id]
+    quote = get_quote_or_404(quote_id)
     quote.delete()
     db.commit()
     return make_response('', 204)
