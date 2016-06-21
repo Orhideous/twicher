@@ -1,17 +1,17 @@
 require('./styles/index.styl');
 
+import Rx from 'rx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import {List} from './app/components.jsx';
+import {init_bus} from './app/logic';
 
-const quotes = [
-  {id: 1, excerpt: 'First', text: 'First quote'},
-  {id: 2, excerpt: 'Second', text: 'Second quote'},
-];
-
+const bus = new Rx.Subject();
 
 ReactDOM.render(
-    <List quotes={quotes}/>,
+    <List bus={bus}/>,
     document.getElementById('list')
 );
+
+init_bus(bus);
