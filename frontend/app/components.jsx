@@ -1,12 +1,42 @@
 import _ from 'lodash';
 import React from "react";
-import {SIGNALS} from "./logic";
+import classNames from 'classnames';
+
+import {send, SIGNALS} from "./logic";
 
 
 class Quote extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {selected: false};
+    }
+    componentDidMount() {
+        this.props.bus
+            .filter(
+                ({tell}) => {
+                    return tell == SIGNALS.QUOTE_LOADED
+                }
+            )
+            .subscribe(
+                ({data}) => {
+                    this.setState({
+                        selected: data.id == this.props.quote.id
+                    });
+                }
+            )
+    }
     render() {
         return (
-            <div className="list-group-item">
+            <div
+                className={classNames("list-group-item", {active: this.state.selected})}
+                onClick={
+                    () => send(
+                        this.props.bus,
+                        SIGNALS.QUOTE_SELECTED,
+                        {id: this.props.quote.id}
+                    )
+                }
+            >
                 <p className="list-group-item-text">
                     <span className="badge badge-id">
                         {this.props.quote.id}
@@ -26,7 +56,7 @@ export class List extends React.Component {
         this.props.bus
             .filter(
                 ({tell}) => {
-                    return tell == SIGNALS.QUOTES_LOADED
+                    return tell == SIGNALS.QUOTES_FETCHED
                 }
             )
             .subscribe(
@@ -39,7 +69,14 @@ export class List extends React.Component {
     render() {
         return (
             <div className="cite-list list-group">
-                 {_.map(this.state.quotes, (quote) => <Quote key={quote.id} quote={quote}/>)}
+                 {_.map(
+                     this.state.quotes,
+                     (quote) => <Quote
+                         key={quote.id}
+                         quote={quote}
+                         bus={this.props.bus}
+                     />
+                 )}
             </div>
         )
     }

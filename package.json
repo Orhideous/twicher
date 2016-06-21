@@ -8,7 +8,8 @@
     "lodash": "4.13.1",
     "rx": "~4.1.0",
     "react-dom": "15.1.0",
-    "xhr": "~2.2.0"
+    "xhr": "~2.2.0",
+    "classnames": "~2.2.5"
   },
   "devDependencies": {
     "webpack": "~1.10.5",
