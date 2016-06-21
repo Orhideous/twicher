@@ -5,27 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Twicher</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.bundle.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
 </head>
 <body>
 {% include 'inc/navbar.html' %}
 <div class="container-fluid">
     <div class="row main">
         <div class="col-md-4 left-column">
-            <div id="cite-list" class="list-group">
-                <div class="list-group-item active">
-					<span class="badge">
-						&nbsp;<input type="checkbox" checked>&nbsp;
-					</span>
-                    <p class="list-group-item-text">First quote</p>
-                </div>
-                <div class="list-group-item">
-					<span class="badge">
-						&nbsp;<input type="checkbox">&nbsp;
-					</span>
-                    <p class="list-group-item-text">Second quote</p>
-                </div>
-            </div>
+            <div id="list"></div>
         </div>
         <div class="col-md-8 rightcol">
             <div id="preview" class="righthalf rhtop">
@@ -33,7 +20,9 @@
             </div>
             <div class="righthalf rhbottom">
                 <div class="form-group">
-                    <textarea class="form-control" rows="10"></textarea>
+                    <label>
+                        <textarea class="form-control" rows="10"></textarea>
+                    </label>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-default">Save</button>
@@ -42,7 +31,6 @@
             </div>
         </div>
     </div>
-    {#        <div id="list"></div>#}
     {#        <div id="preview"></div>#}
     {#        <div id="editor"></div>#}
 </div>

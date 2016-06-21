@@ -1,4 +1,4 @@
-var ExtractTextPlugin, aliases, isProduction, keys, path, vendors, webpack;
+var ExtractTextPlugin, isProduction, keys, path, vendors, webpack;
 
 path = require('path');
 
@@ -10,7 +10,7 @@ ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 isProduction = process.env.NODE_ENV === 'production';
 
-vendors = ["lodash", "react", "rx"];
+vendors = ["lodash", "react", "react-dom", "rx"];
 
 var stylusSettings = {
     paths: "node_modules/bootstrap-styl",
@@ -20,6 +20,7 @@ var stylusSettings = {
 module.exports = {
     context: path.join(__dirname, 'frontend'),
     cache: true,
+    devtool: "#source-map",
     entry: {
         main: "./main",
         vendor: vendors
@@ -32,11 +33,11 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /(node_modules)/,
                 loader: 'babel',
                 query: {
-                    presets: ['es2015']
+                    presets: ['react', 'es2015']
                 }
             },
             {
@@ -64,10 +65,13 @@ module.exports = {
         extensions: ['', '.js', '.styl',],
         modulesDirectories: ['node_modules', 'scripts']
     },
-    plugins: Array.prototype.concat(isProduction ? [new webpack.optimize.UglifyJsPlugin()] : [], [
-        new ExtractTextPlugin("styles.css"), new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: Infinity
-        })
-    ])
+    plugins: Array.prototype.concat(
+        isProduction ? [new webpack.optimize.UglifyJsPlugin()] : [],
+        [
+            new ExtractTextPlugin("styles.css"),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'vendor',
+                minChunks: Infinity
+            })
+        ])
 };
