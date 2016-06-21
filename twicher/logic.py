@@ -38,7 +38,7 @@ def create(text):
 
 @orm.db_session
 def read(quote_id):
-    get_quote_or_404(quote_id)
+    return get_quote_or_404(quote_id)
 
 
 @orm.db_session
