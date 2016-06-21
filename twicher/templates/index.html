@@ -15,24 +15,11 @@
             <div id="list"></div>
         </div>
         <div class="col-md-8 rightcol">
-            <div id="preview" class="righthalf rhtop">
-                preview
-            </div>
             <div class="righthalf rhbottom">
-                <div class="form-group">
-                    <label>
-                        <textarea class="form-control" rows="10"></textarea>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-default">Save</button>
-                    <button class="btn">Preview</button>
-                </div>
+                <div id="editor"></div>
             </div>
         </div>
     </div>
-    {#        <div id="preview"></div>#}
-    {#        <div id="editor"></div>#}
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='vendor.bundle.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='main.bundle.js') }}"></script>

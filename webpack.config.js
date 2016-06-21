@@ -13,8 +13,12 @@ isProduction = process.env.NODE_ENV === 'production';
 vendors = ["lodash", "react", "react-dom", "rx"];
 
 var stylusSettings = {
-    paths: "node_modules/bootstrap-styl",
-    "resolve url": 1
+    paths: [
+        "node_modules/bootstrap-styl",
+        "node_modules/quill"
+    ],
+    "resolve url": 1,
+    "include css": 1
 };
 
 module.exports = {
@@ -31,6 +35,7 @@ module.exports = {
         filename: '[name].bundle.js'
     },
     module: {
+        noParse: /node_modules\/quill\/dist/,
         loaders: [
             {
                 test: /\.jsx?$/,

@@ -9,7 +9,9 @@
     "rx": "~4.1.0",
     "react-dom": "15.1.0",
     "xhr": "~2.2.0",
-    "classnames": "~2.2.5"
+    "classnames": "~2.2.5",
+    "react-quill": "~0.4.1",
+    "quill": "~0.20.1"
   },
   "devDependencies": {
     "webpack": "~1.10.5",
