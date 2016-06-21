@@ -88,26 +88,6 @@ export class List extends React.Component {
     }
 }
 
-
-var defaultContent = (
-    '<div><span style="font-size: 18px;">Quill Rich Text Editor</span>' +
-    '</div><div><br></div><div>Quill is a free, <a href="https://githu' +
-    'b.com/quilljs/quill/">open source</a> WYSIWYG editor built for th' +
-    'e modern web. With its <a href="http://quilljs.com/docs/modules/"' +
-    '>extensible architecture</a> and a <a href="http://quilljs.com/do' +
-    'cs/api/">expressive API</a> you can completely customize it to fu' +
-    'lfill your needs. Some built in features include:</div><div><br><' +
-    '/div><ul><li>Fast and lightweight</li><li>Semantic markup</li><li' +
-    '>Standardized HTML between browsers</li><li>Cross browser support' +
-    ' including Chrome, Firefox, Safari, and IE 9+</li></ul><div><br><' +
-    '/div><div><span style="font-size: 18px;">Downloads</span></div><d' +
-    'iv><br></div><ul><li><a href="https://quilljs.com">Quill.js</a>, ' +
-    'the free, open source WYSIWYG editor</li><li><a href="https://zen' +
-    'oamaro.github.io/react-quill">React-quill</a>, a React component ' +
-    'that wraps Quill.js</li></ul>'
-);
-
-
 const toolbarItems = [
 
     {
@@ -147,20 +127,32 @@ const toolbarItems = [
     },
 ];
 
-/*
- A simple editor component, with a real-time preview
- of the generated HTML content.
- */
 export class Editor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            value: defaultContent
-        };
+        this.state = {value: ''};
     }
-
+    componentDidMount() {
+        this.props.bus
+            .filter(
+                ({tell}) => {
+                    return tell == SIGNALS.QUOTE_LOADED
+                }
+            )
+            .subscribe(
+                ({data}) => {
+                    this.setState({
+                        value: data.text,
+                        id: data.id
+                    });
+                }
+            )
+    }
     onEditorChange(value) {
-        this.setState({value: value});
+        this.setState({value});
+    }
+    onSave() {
+        console.log(this.state.value)
     }
 
     render() {
@@ -173,6 +165,12 @@ export class Editor extends React.Component {
                     value={this.state.value}
                     onChange={this.onEditorChange.bind(this)}
                 />
+                <div className="form-group">
+                    <button
+                        className="btn btn-default"
+                        onClick={this.onSave.bind(this)}
+                    >Save</button>
+                </div>
             </div>
         )
     }

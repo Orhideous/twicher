@@ -24,8 +24,10 @@ export function init_bus(bus) {
         )
         .subscribe(
             ({data}) => {
-                // TODO: load quote into editor
-                send(bus, SIGNALS.QUOTE_LOADED, {id: data.id});
+                xhr.get(
+                    '/quotes/' + data.id,
+                    (err, resp) => send(bus, SIGNALS.QUOTE_LOADED, JSON.parse(resp.body))
+                );
             }
         )
 }
