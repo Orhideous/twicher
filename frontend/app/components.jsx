@@ -159,13 +159,13 @@ export class Editor extends React.Component {
         return (
             <div>
                 <ReactQuill
-                    className="editor"
+                    className="editor panel-body"
                     theme="snow"
                     toolbar={toolbarItems}
                     value={this.state.value}
                     onChange={this.onEditorChange.bind(this)}
                 />
-                <div className="form-group">
+                <div className="panel-footer">
                     <button
                         className="btn btn-default"
                         onClick={this.onSave.bind(this)}
