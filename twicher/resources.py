@@ -32,8 +32,8 @@ class Quote(Resource):
         text = parser.parse_args().get('text', None)
         return logic.update(quote_id, text)
 
-    def delete(self, quote_id):
-        return logic.delete(quote_id)
+    def patch(self, quote_id):
+        return logic.toggle(quote_id)
 
 
 class Random(Resource):

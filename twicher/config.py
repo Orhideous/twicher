@@ -1,19 +1,9 @@
 class Config:
     DEBUG = False
     TESTING = False
-    DB_TYPE = 'sqlite'
-    DB_NAME = None
 
 
 class Development(Config):
     DEBUG = True
-    DB_NAME = '/tmp/quotes_dev.sqlite'
+    REDIS_URL = "redis://127.0.0.1:6379/7"
 
-
-class Testing(Config):
-    TESTING = True
-    DB_NAME = ':memory:'
-
-
-class Production(Config):
-    DB_NAME = 'quotes.sqlite'
