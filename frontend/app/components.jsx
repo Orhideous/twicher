@@ -152,7 +152,14 @@ export class Editor extends React.Component {
         this.setState({value});
     }
     onSave() {
-        console.log(this.state.value)
+        send(
+            this.props.bus,
+            SIGNALS.QUOTE_SAVE,
+            {
+                id: this.state.id,
+                text: this.state.value
+            }
+        );
     }
 
     render() {
