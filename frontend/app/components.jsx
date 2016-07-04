@@ -7,7 +7,9 @@ import ReactQuill from 'react-quill';
 
 import {send, SIGNALS} from "./logic";
 
-
+function formatQuote(quote) {
+    return {__html: quote.text};
+}
 class Quote extends React.Component {
     constructor(props) {
         super(props);
@@ -43,11 +45,14 @@ class Quote extends React.Component {
                     )
                 }
             >
-                <p className="list-group-item-text">
+                <p>
                     <span className="badge badge-id">
                         {this.props.quote.id}
 					</span>
-                   {this.props.quote.snippet}
+                    <span
+                        className="list-group-item-text"
+                        dangerouslySetInnerHTML={formatQuote(this.props.quote)}
+                    />
                 </p>
             </div>
         )

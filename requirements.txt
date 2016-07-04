@@ -3,8 +3,8 @@ Flask-Script
 flask-restful
 progressbar-latest
 pony
+flask-redis
 Jinja2
 MarkupSafe
 Werkzeug
 itsdangerous
-lxml

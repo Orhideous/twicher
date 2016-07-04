@@ -1,60 +1,54 @@
-from models import db, Quote
-from pony import orm
+from models import Quote, storage
 from flask import make_response, url_for, abort
-from utils import make_snippet
+
+QUOTE_TPL = "quote:{}"
 
 
-@orm.db_session
 def get_quote_or_404(quote_id):
-    try:
-        return Quote[quote_id]
-    except orm.ObjectNotFound:
-        return abort(404)
+    text = storage.get(QUOTE_TPL.format(quote_id))
+    return Quote(quote_id, text) if text else abort(404)
 
 
-@orm.db_session
 def get_all():
-    return Quote.select()[:]
+    ids = sorted(map(int, storage.smembers("all_quotes")))
+    keys = [QUOTE_TPL.format(quote_id) for quote_id in ids]
+    values = storage.mget(keys)
+    return [Quote(quote_id, quote_text) for quote_id, quote_text in zip(ids, values)]
 
 
-@orm.db_session
 def get_random():
-    return Quote.select().random(1)
+    return get_quote_or_404(storage.srandmember("active_quotes"))
 
 
-@orm.db_session
 def create(text):
     if not text:
         abort(400)
-    quote = Quote(
-        text=text,
-        snippet=make_snippet(text)
-    )
-    db.commit()
+    quote_id = storage.incr("last_quote_id")
+    storage.sadd("all_quotes", quote_id)
+    storage.set(QUOTE_TPL.format(quote_id), text)
     resp = make_response('', 201)
-    resp.headers['Location'] = url_for('quote', quote_id=quote.id)
+    resp.headers['Location'] = url_for('quote', quote_id=quote_id)
     return resp
 
 
-@orm.db_session
 def read(quote_id):
     return get_quote_or_404(quote_id)
 
 
-@orm.db_session
 def update(quote_id, text):
     if not text:
         abort(400)
-    quote = get_quote_or_404(quote_id)
-    quote.text = text
-    quote.snippet = make_snippet(text)
-    db.commit()
-    return quote
+    if not storage.sismember("all_quotes", quote_id):
+        abort(404)
+    storage.set(QUOTE_TPL.format(quote_id), text)
+    return Quote(quote_id, text)
 
 
-@orm.db_session
-def delete(quote_id):
-    quote = get_quote_or_404(quote_id)
-    quote.delete()
-    db.commit()
+def toggle(quote_id):
+    if not storage.sismember("all_quotes", quote_id):
+        abort(404)
+    if storage.sismember("active_quotes", quote_id):
+        storage.srem("active_quotes", quote_id)
+    else:
+        storage.sadd("active_quotes", quote_id)
     return make_response('', 204)
