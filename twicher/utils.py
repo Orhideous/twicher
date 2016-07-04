@@ -2,7 +2,6 @@ from contextlib import contextmanager
 from copy import deepcopy
 from functools import wraps
 from flask_restful.fields import Integer, String
-from lxml import etree
 
 from pony.orm import db_session
 
@@ -48,15 +47,3 @@ def with_session(func):
         with db_session:
             return func(*args, **kwargs)
     return wrapper
-
-
-def make_snippet(text, length=150):
-    return (
-        etree
-        .tostring(
-            etree.fromstring(ROOT_SNIPPET.format(text)),
-            encoding='utf-8',
-            method='text'
-        )
-        .decode('utf-8')
-    )[:length]

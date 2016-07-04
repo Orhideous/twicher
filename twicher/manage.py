@@ -3,7 +3,7 @@ from flask_script import Manager
 
 from models import db
 from application import app
-from utils import perform, COLORS
+from utils import perform
 
 manager = Manager(app)
 

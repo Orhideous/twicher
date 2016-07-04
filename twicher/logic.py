@@ -1,7 +1,6 @@
 from models import db, Quote
 from pony import orm
 from flask import make_response, url_for, abort
-from utils import make_snippet
 
 
 @orm.db_session
@@ -28,7 +27,6 @@ def create(text):
         abort(400)
     quote = Quote(
         text=text,
-        snippet=make_snippet(text)
     )
     db.commit()
     resp = make_response('', 201)
@@ -47,7 +45,6 @@ def update(quote_id, text):
         abort(400)
     quote = get_quote_or_404(quote_id)
     quote.text = text
-    quote.snippet = make_snippet(text)
     db.commit()
     return quote
 
