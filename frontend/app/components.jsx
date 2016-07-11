@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import ReactQuill from 'react-quill';
 
-import {send, SIGNALS} from "./logic";
+import {send, SIGNALS, fetchQuotes} from "./logic";
 
 function formatQuote(quote) {
     return {__html: quote.text};
@@ -59,6 +59,51 @@ class Quote extends React.Component {
     }
 }
 
+class AddQuoteItem extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {selected: false};
+    }
+
+    componentDidMount() {
+        this.props.bus
+            .filter(
+                ({tell}) => {
+                    return tell == SIGNALS.QUOTE_LOADED
+                }
+            )
+            .subscribe(
+                ({data}) => {
+                    this.setState({
+                        selected: data.id == -1
+                    });
+                }
+            )
+    }
+
+    render() {
+        //noinspection JSUnresolvedVariable,JSUnresolvedVariable
+        return (
+            <div
+                className={classNames("list-group-item", {active: this.state.selected})}
+                onClick={
+                    function() {
+                        send(
+                            this.props.bus,
+                            SIGNALS.QUOTE_SELECTED,
+                            {id: -1}
+                        );
+                    }.bind(this)
+                }
+            >
+                <p className="add-quote-item">
+                    <h2 className="add-quote-icon">+</h2>
+                </p>
+            </div>
+        )
+    }
+}
+
 export class List extends React.Component {
     constructor(props) {
         super(props);
@@ -77,6 +122,8 @@ export class List extends React.Component {
             )
     }
 
+
+
     render() {
         return (
             <div className="cite-list list-group">
@@ -88,6 +135,7 @@ export class List extends React.Component {
                          bus={this.props.bus}
                      />
                  )}
+                <AddQuoteItem bus={this.props.bus} />
             </div>
         )
     }
@@ -159,12 +207,13 @@ export class Editor extends React.Component {
     onSave() {
         send(
             this.props.bus,
-            SIGNALS.QUOTE_SAVE,
+            this.state.id>=0?SIGNALS.QUOTE_SAVE:SIGNALS.QUOTE_ADD,
             {
                 id: this.state.id,
                 text: this.state.value
             }
         );
+        fetchQuotes(this.props.bus);
     }
 
     render() {
