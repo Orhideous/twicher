@@ -50,7 +50,9 @@ class Quote extends React.Component {
                 }
             >
                 <p>
-                    <a href="#" onClick={this.toggle.bind(this)}><i className="fa fa-eye-slash" /></a>
+                    <a href="#" onClick={this.toggle.bind(this)} className="toggle">
+                        <i className="fa fa-eye-slash" />
+                    </a>
                     <span className="badge badge-id">
                         {this.props.quote.id}
 					</span>
