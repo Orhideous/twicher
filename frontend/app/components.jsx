@@ -28,12 +28,13 @@ class Quote extends React.Component {
                     this.setState({
                         selected: data.id == this.props.quote.id
                     });
-                }
+                    }
             )
     }
 
     toggle() {
-        send(this.props.bus, SIGNALS.QUOTE_TOGGLE, {id: this.props.quote.id})
+        send(this.props.bus, SIGNALS.QUOTE_TOGGLE, {id: this.props.quote.id});
+        fetchQuotes(this.props.bus);
     }
 
     render() {
@@ -92,7 +93,7 @@ class AddQuoteItem extends React.Component {
         //noinspection JSUnresolvedVariable,JSUnresolvedVariable
         return (
             <div
-                className={classNames("list-group-item", {active: this.state.selected})}
+                className={classNames("list-group-item add-quote-item", {active: this.state.selected})}
                 onClick={
                     function() {
                         send(
@@ -103,8 +104,8 @@ class AddQuoteItem extends React.Component {
                     }.bind(this)
                 }
             >
-                <p className="add-quote-item">
-                    <h2 className="add-quote-icon">+</h2>
+                <p>
+                    +
                 </p>
             </div>
         )

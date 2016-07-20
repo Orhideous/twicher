@@ -6,6 +6,7 @@ export const SIGNALS = {
     QUOTE_LOADED: "QUOTE_LOADED",
     QUOTE_SAVE: "QUOTE_SAVE",
     QUOTE_ADD: "QUOTE_ADD",
+    QUOTE_TOGGLE: 'QUOTE_TOGGLE'
 };
 
 export function send(bus, tell, data) {
@@ -100,7 +101,7 @@ export function init_bus(bus) {
                     `/quotes/${id}`,
                     {json: {text}},
                     function(err, resp) {
-
+                        //location.reload();
                     }
                 );
             }
