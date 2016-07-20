@@ -53,7 +53,7 @@ export function init_bus(bus) {
                     `/quotes/${id}`,
                     {json: {text}},
                     function(err, resp) {
-                        console.log(resp.body);
+                        //console.log(resp.body);
                         send(bus, SIGNALS.QUOTE_LOADED, resp.body)
 
                     }
@@ -77,7 +77,7 @@ export function init_bus(bus) {
                             resp.headers.location,
                             {json: {text}},
                             function(err, resp) {
-                                console.log(resp.body);
+                                //console.log(resp.body);
                                 send(bus, SIGNALS.QUOTE_LOADED, resp.body)
 
                             }
@@ -86,5 +86,23 @@ export function init_bus(bus) {
                     }
                 );
             }
+        );
+
+    bus
+        .filter(
+            ({tell}) => {
+                return tell == SIGNALS.QUOTE_TOGGLE
+            }
         )
+        .subscribe(
+            ({data:{id, text}}) => {
+                xhr.patch(
+                    `/quotes/${id}`,
+                    {json: {text}},
+                    function(err, resp) {
+
+                    }
+                );
+            }
+        );
 }

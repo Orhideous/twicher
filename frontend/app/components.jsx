@@ -32,6 +32,10 @@ class Quote extends React.Component {
             )
     }
 
+    toggle() {
+        send(this.props.bus, SIGNALS.QUOTE_TOGGLE, {id: this.props.quote.id})
+    }
+
     render() {
         //noinspection JSUnresolvedVariable,JSUnresolvedVariable
         return (
@@ -46,6 +50,7 @@ class Quote extends React.Component {
                 }
             >
                 <p>
+                    <a href="#" onClick={this.toggle.bind(this)}><i className="fa fa-eye-slash" /></a>
                     <span className="badge badge-id">
                         {this.props.quote.id}
 					</span>
@@ -205,6 +210,7 @@ export class Editor extends React.Component {
         this.setState({value});
     }
     onSave() {
+        console.log(this.state.id);
         send(
             this.props.bus,
             this.state.id>=0?SIGNALS.QUOTE_SAVE:SIGNALS.QUOTE_ADD,
