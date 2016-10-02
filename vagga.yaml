@@ -1,20 +1,23 @@
-minimum-vagga: v0.5.0
+minimum-vagga: v0.6.0
 
 containers:
   redis:
     setup:
-    - !Alpine v3.3
+    - !Alpine v3.4
     - !Install [redis]
     - !EnsureDir /storage
-    - !EnsureDir /work/run/storage/redis
-    # deployment things
-    - !Sh "chmod +r /bin/bbsuid"
     - !EnsureDir /config
     volumes:
-      /storage: !BindRW /work/run/storage/redis
+      /storage: !Persistent
+        name: redis
+        init-command: _copy-example-db
       /config: !BindRO /work/config
 
 commands:
+  _copy-example-db: !Command
+    container: redis
+    run: cp examples/dump.rdb /storage/
+
   redis: !Command
     container: redis
     run:
