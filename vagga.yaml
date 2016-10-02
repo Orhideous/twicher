@@ -1,25 +1,49 @@
 minimum-vagga: v0.6.0
 
 containers:
-  redis:
+  _base_alpine:
     setup:
     - !Alpine v3.4
+    - !EnsureDir /config
+
+  redis:
+    setup:
+    - !Container _base_alpine
     - !Install [redis]
     - !EnsureDir /storage
-    - !EnsureDir /config
     volumes:
       /storage: !Persistent
         name: redis
         init-command: _copy-example-db
       /config: !BindRO /work/config
 
+  python:
+    setup:
+    - !Container _base_alpine
+    - !Install [python3]
+    - !Py3Requirements requirements.txt
+
 commands:
   _copy-example-db: !Command
     container: redis
     run: cp examples/dump.rdb /storage/
 
-  redis: !Command
+  _redis: &redis !Command
     container: redis
     run:
     - redis-server
     - /config/redis.conf
+
+  _python: &python !Command
+    container: python
+    work-dir: twicher
+    run:
+    - python3
+    - application.py
+
+  run: !Supervise
+    description: Run full server stack
+    kill-unresponsive-after: 5
+    children:
+      redis: *redis
+      python: *python
