@@ -12,6 +12,7 @@ def get_quote_or_404(quote_id):
 def get_all():
     ids = sorted(map(int, storage.smembers("all_quotes")))
     keys = [QUOTE_TPL.format(quote_id) for quote_id in ids]
+    values = storage.mget(keys) if keys else []
     return [Quote(quote_id, quote_text) for quote_id, quote_text in zip(ids, values)]
 
 def get_active():
