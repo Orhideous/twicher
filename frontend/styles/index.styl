@@ -2,12 +2,41 @@
 
 @import 'dist/quill.snow.css'
 
+.toggle
+  float:right;
+
+.active .toggle
+  color: #fff;
+  &:hover
+    color: darken(#fff, 15%);
+
+.panel-body
+  padding: 0px
+  .ql-container
+    padding: px;
+  .ql-toolbar
+    border-bottom: 1px solid #dddddd;
+
+
+.ql-container
+  padding: 0px;
+
 .main
   height 100vh
   max-height 100vh
 
 .search
   margin 0.5em 0
+
+.list-group
+  p
+    margin-bottom: 0px
+    padding: 5px 0px
+
+  .add-quote-item
+    text-align: center
+    padding: 0px
+    font-size: 30px;
 
 .list-group-item
   max-height 10em
@@ -40,3 +69,6 @@
 // Fix for image tooltip
 .ql-container
   overflow visible!important
+
+.add-quote-icon
+  margin: 0px

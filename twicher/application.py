@@ -6,7 +6,7 @@ from flask_restful import Api
 from models import storage
 from resources import Quote, QuotesList, Random
 
-app = Flask(__name__, static_folder="/static")
+app = Flask(__name__)
 app.config.from_object(environ.get('APP_SETTINGS', 'config.Development'))
 
 storage.init_app(app)
@@ -24,4 +24,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
