@@ -23,7 +23,8 @@ else {
 var stylusSettings = {
     paths: [
         path.join(process.env.NODE_PATH, "bootstrap-styl"),
-        path.join(process.env.NODE_PATH, "react-quill", "node_modules", "quill"),
+        path.join(process.env.NODE_PATH, "react-quill"),
+        path.join(process.env.NODE_PATH, "quill"),
     ],
     "resolve url": 1,
     "include css": 1

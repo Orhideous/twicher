@@ -13,7 +13,7 @@ class QuotesList(Resource):
 
     @marshal_with(quote_marshaller)
     def get(self):
-        return logic.get_all()
+        return logic.get_active()
 
     def post(self):
         text = parser.parse_args().get('text', None)

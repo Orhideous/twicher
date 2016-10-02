@@ -12,7 +12,12 @@ def get_quote_or_404(quote_id):
 def get_all():
     ids = sorted(map(int, storage.smembers("all_quotes")))
     keys = [QUOTE_TPL.format(quote_id) for quote_id in ids]
-    values = storage.mget(keys)
+    return [Quote(quote_id, quote_text) for quote_id, quote_text in zip(ids, values)]
+
+def get_active():
+    ids = sorted(map(int, storage.smembers("active_quotes")))
+    keys = [QUOTE_TPL.format(quote_id) for quote_id in ids]
+    values = storage.mget(keys) if keys else []
     return [Quote(quote_id, quote_text) for quote_id, quote_text in zip(ids, values)]
 
 
@@ -25,6 +30,7 @@ def create(text):
         abort(400)
     quote_id = storage.incr("last_quote_id")
     storage.sadd("all_quotes", quote_id)
+    storage.sadd("active_quotes", quote_id)
     storage.set(QUOTE_TPL.format(quote_id), text)
     resp = make_response('', 201)
     resp.headers['Location'] = url_for('quote', quote_id=quote_id)
