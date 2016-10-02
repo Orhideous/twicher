@@ -1,21 +1,29 @@
-var ExtractTextPlugin, isProduction, keys, path, vendors, webpack;
+var ExtractTextPlugin, isProduction, path, vendors, webpack;
 
 path = require('path');
 
 webpack = require('webpack');
 
-keys = require('lodash').keys;
-
 ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 isProduction = process.env.NODE_ENV === 'production';
 
-vendors = ["lodash", "react", "react-dom", "rx"];
+vendors = [
+    "lodash",
+    "rx"
+];
+
+if (isProduction) {
+    vendors.push("react", "react-dom");
+}
+else {
+    vendors.push("react-lite");
+}
 
 var stylusSettings = {
     paths: [
-        "node_modules/bootstrap-styl",
-        "node_modules/react-quill/node_modules/quill"
+        path.join(process.env.NODE_PATH, "bootstrap-styl"),
+        path.join(process.env.NODE_PATH, "react-quill", "node_modules", "quill"),
     ],
     "resolve url": 1,
     "include css": 1
@@ -67,8 +75,12 @@ module.exports = {
         ]
     },
     resolve: {
+        root: [process.env.NODE_PATH],
         extensions: ['', '.js', '.styl',],
         modulesDirectories: ['node_modules', 'scripts']
+    },
+    resolveLoader: {
+        root: process.env.NODE_PATH
     },
     plugins: Array.prototype.concat(
         isProduction ? [new webpack.optimize.UglifyJsPlugin()] : [],

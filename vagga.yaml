@@ -17,11 +17,42 @@ containers:
         init-command: _copy-example-db
       /config: !BindRO /work/config
 
+  builder:
+    setup:
+    - !Container _base_alpine
+    - !NpmDependencies
+      file: package.json
+      peer: true
+      optional: true
+      dev: true
+
+  static:
+    setup:
+    - !Container builder
+    - !EnsureDir /static
+    - !Copy
+      source: /work/frontend
+      path: /tmp/frontend
+    - !Copy
+      source: /work/webpack.config.js
+      path: /tmp/webpack.config.js
+    - !Env
+      NODE_PATH: /usr/lib/node_modules
+    - !RunAs
+      work-dir: /tmp
+      script: webpack --progress --output-path /static
+    auto-clean: true
+
   python:
     setup:
     - !Container _base_alpine
     - !Install [python3]
     - !Py3Requirements requirements.txt
+    - !EnsureDir /static
+    - !Build
+      container: static
+      source: /static
+      path: /static
 
 commands:
   _copy-example-db: !Command
