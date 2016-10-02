@@ -2,6 +2,10 @@
 
 To run, install latest `vagga` version (from `vagga-testing`)
 
+Then build static
+
+    vagga webpack --progress
+
 Then launch application
 
     vagga run
