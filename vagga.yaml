@@ -38,21 +38,17 @@ containers:
       path: /tmp/webpack.config.js
     - !Env
       NODE_PATH: /usr/lib/node_modules
+      NODE_ENV: production
     - !RunAs
       work-dir: /tmp
       script: webpack --progress --output-path /static
     auto-clean: true
 
-  python:
+  python-dev:
     setup:
     - !Container _base_alpine
     - !Install [python3]
     - !Py3Requirements requirements.txt
-    - !EnsureDir /static
-    - !Build
-      container: static
-      source: /static
-      path: /static
 
 commands:
   _copy-example-db: !Command
@@ -66,11 +62,18 @@ commands:
     - /config/redis.conf
 
   _python: &python !Command
-    container: python
+    container: python-dev
     work-dir: twicher
     run:
     - python3
     - application.py
+
+  webpack: !Command
+    container: builder
+    description: Webpack CLI
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+    run: [webpack]
 
   run: !Supervise
     description: Run full server stack
