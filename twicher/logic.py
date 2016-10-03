@@ -4,9 +4,9 @@ from flask import make_response, url_for, abort
 QUOTE_TPL = "quote:{}"
 
 
-def get_quote_or_404(quote_id):
+def get_quote_or_abort(quote_id):
     text = storage.get(QUOTE_TPL.format(quote_id))
-    return Quote(quote_id, text) if text else abort(404)
+    return Quote(quote_id, text) if text else abort(400)
 
 
 def get_all():
@@ -23,7 +23,7 @@ def get_active():
 
 
 def get_random():
-    return get_quote_or_404(storage.srandmember("active_quotes"))
+    return get_quote_or_abort(storage.srandmember("active_quotes").decode())
 
 
 def create(text):
@@ -39,7 +39,7 @@ def create(text):
 
 
 def read(quote_id):
-    return get_quote_or_404(quote_id)
+    return get_quote_or_abort(quote_id)
 
 
 def update(quote_id, text):
