@@ -1,5 +1,7 @@
 ## Simple quotes editor
 
+[![Build Status](https://travis-ci.org/everypony/twicher.svg?branch=master)](https://travis-ci.org/everypony/twicher)
+
 To run, install latest `vagga` version (from `vagga-testing`)
 
 Then build static
