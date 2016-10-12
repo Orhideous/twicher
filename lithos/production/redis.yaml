@@ -1,0 +1,14 @@
+user_id: 1
+volumes:
+  /storage: !Persistent
+    path: /storage/redis
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 0
+fileno-limit: 50ki
+memory-limit: 256Mi
+cpu-shares: 128
+executable: /usr/bin/redis-server
+arguments:
+- /config/redis.conf

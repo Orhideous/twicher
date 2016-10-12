@@ -1,0 +1,14 @@
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 256Mi
+    mode: 0o1777
+environ:
+  APP_CONFIG: /config/application.py
+fileno-limit: 50ki
+memory-limit: 512Mi
+cpu-shares: 1024
+workdir: /app
+executable: /usr/bin/python3
+arguments:
+- application.py

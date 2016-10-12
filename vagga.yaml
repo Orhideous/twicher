@@ -1,12 +1,17 @@
 minimum-vagga: v0.6.0
 
+_templates:
+  local_env: &local_env
+    APP_CONFIG: /config/application.py
+
 containers:
   _base_alpine:
     setup:
     - !Alpine v3.4
     - !EnsureDir /config
+    - !Sh "chmod +r /bin/bbsuid"
 
-  redis:
+  redis-dev:
     setup:
     - !Container _base_alpine
     - !Install [redis]
@@ -15,7 +20,7 @@ containers:
       /storage: !Persistent
         name: redis
         init-command: _copy-example-db
-      /config: !BindRO /work/config
+      /config: !BindRO /work/config/local
 
   builder:
     setup:
@@ -44,11 +49,55 @@ containers:
       script: webpack --progress --output-path /static
     auto-clean: true
 
-  python-dev:
+  app-dev:
+    setup:
+      - !Container _base_alpine
+      - !Install [python3]
+      - !Py3Requirements requirements.txt
+      - !EnsureDir /static
+      - !Build
+        container: static
+        source: /static
+        path: /static
+    environ: *local_env
+    volumes:
+      /config: !BindRO /work/config/local
+
+  app-deploy:
     setup:
     - !Container _base_alpine
     - !Install [python3]
     - !Py3Requirements requirements.txt
+    - !EnsureDir /static
+    - !Build
+      container: static
+      source: /static
+      path: /static
+    - !Copy
+      source: /work/config/production
+      path: /config
+    - !EnsureDir /lithos
+    - !Copy
+      source: /work/lithos/production
+      path: /lithos
+    - !EnsureDir /app
+    - !Copy
+      source: /work/twicher
+      path: /app
+    - !Sh python3 -m compileall /app
+
+  redis-deploy:
+    setup:
+    - !Container _base_alpine
+    - !Install [redis]
+    - !EnsureDir /storage
+    - !Copy
+      source: /work/config/production
+      path: /config
+    - !EnsureDir /lithos
+    - !Copy
+      source: /work/lithos/production
+      path: /lithos
 
 commands:
   _copy-example-db: !Command
@@ -56,13 +105,13 @@ commands:
     run: cp examples/dump.rdb /storage/
 
   _redis: &redis !Command
-    container: redis
+    container: redis-dev
     run:
     - redis-server
     - /config/redis.conf
 
-  _python: &python !Command
-    container: python-dev
+  _app: &app !Command
+    container: app-dev
     work-dir: twicher
     run:
     - python3
@@ -80,4 +129,4 @@ commands:
     kill-unresponsive-after: 5
     children:
       redis: *redis
-      python: *python
+      app: *app
