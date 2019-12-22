@@ -14,8 +14,8 @@ object Main extends IOApp {
   private val port = sys.env.getOrElse("TWICHER_PORT", "9000").toInt
   private val dir  = sys.env.getOrElse("TWICHER_DIR", "./data")
 
-  private val repository = QuotesFileRepository(dir)
-  private val routes     = Router[IO]("/" -> Routes(repository)).orNotFound
+  private val repository = QuotesFileRepository[IO](dir)
+  private val routes     = Router[IO]("/" -> Routes[IO](repository)).orNotFound
 
   override def run(args: List[String]): IO[ExitCode] =
     BlazeServerBuilder[IO]

@@ -6,7 +6,7 @@ import java.nio.file.WatchEvent
 import java.util.concurrent.Executors
 
 import better.files.File
-import cats.effect.IO
+import cats.effect.Sync
 import com.typesafe.scalalogging.StrictLogging
 import io.methvin.better.files.RecursiveFileMonitor
 import name.orhideous.twicher.Error
@@ -15,7 +15,9 @@ import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-class QuotesFileRepository(private val quotesDir: File) extends QuotesRepository with StrictLogging {
+class QuotesFileRepository[F[_]: Sync](private val quotesDir: File)(implicit F: Sync[F])
+    extends QuotesAlgebra[F]
+    with StrictLogging {
 
   private final val cache = TrieMap.empty[Int, Quote]
   private final val rnd   = new Random
@@ -33,18 +35,18 @@ class QuotesFileRepository(private val quotesDir: File) extends QuotesRepository
   watcher.start()
   reload()
 
-  override def list: IO[Vector[Quote]] = IO.pure(cache.values.toVector)
+  override def list: F[Vector[Quote]] = F.pure(cache.values.toVector)
 
-  override def random: IO[Quote] =
+  override def random: F[Quote] =
     if (cache.isEmpty) {
-      IO.raiseError(Error.NoSuchQuote)
+      F.raiseError(Error.NoSuchQuote)
     } else {
       read(cache.keySet.toVector(rnd.nextInt(cache.size)))
     }
 
-  override def read(id: Int): IO[Quote] = cache.get(id) match {
-    case Some(quote) => IO.pure(quote)
-    case None        => IO.raiseError(Error.NoSuchQuote)
+  override def read(id: Int): F[Quote] = cache.get(id) match {
+    case Some(quote) => F.pure(quote)
+    case None        => F.raiseError(Error.NoSuchQuote)
   }
 
   private def reload(): Unit = {
@@ -58,7 +60,7 @@ class QuotesFileRepository(private val quotesDir: File) extends QuotesRepository
 object QuotesFileRepository {
   private final val pattern = ".*(\\d+)\\.txt$".r
 
-  def apply(quotesDir: String): QuotesFileRepository = new QuotesFileRepository(File(quotesDir))
+  def apply[F[_]: Sync](quotesDir: String): QuotesFileRepository[F] = new QuotesFileRepository[F](File(quotesDir))
 
   private final implicit val charset: Charset = Charset.forName("UTF-8")
 
