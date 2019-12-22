@@ -9,7 +9,7 @@ import better.files.File
 import cats.effect.Sync
 import com.typesafe.scalalogging.StrictLogging
 import io.methvin.better.files.RecursiveFileMonitor
-import name.orhideous.twicher.Error
+import name.orhideous.twicher.error.TwicherError
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext
@@ -35,18 +35,17 @@ class QuotesFileRepository[F[_]: Sync](private val quotesDir: File)(implicit F: 
   watcher.start()
   reload()
 
-  override def list: F[Vector[Quote]] = F.pure(cache.values.toVector)
+  override def list: F[Vector[Quote]] =
+    if (cache.isEmpty) F.raiseError(TwicherError.NoQuotes)
+    else F.pure(cache.values.toVector)
 
   override def random: F[Quote] =
-    if (cache.isEmpty) {
-      F.raiseError(Error.NoSuchQuote)
-    } else {
-      read(cache.keySet.toVector(rnd.nextInt(cache.size)))
-    }
+    if (cache.isEmpty) F.raiseError(TwicherError.NoQuotes)
+    else read(cache.keySet.toVector(rnd.nextInt(cache.size)))
 
   override def read(id: Int): F[Quote] = cache.get(id) match {
     case Some(quote) => F.pure(quote)
-    case None        => F.raiseError(Error.NoSuchQuote)
+    case None        => F.raiseError(TwicherError.NoSuchQuote)
   }
 
   private def reload(): Unit = {
