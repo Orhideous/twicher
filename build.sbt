@@ -1,3 +1,5 @@
+enablePlugins(DockerPlugin)
+
 val Http4sVersion           = "0.20.8"
 val CirceVersion            = "0.11.1"
 val LogbackVersion          = "1.2.3"
@@ -9,6 +11,28 @@ organization := "name.orhideous"
 name := "twicher"
 version := "0.1.0-SNAPSHOT"
 scalaVersion := "2.12.8"
+
+dockerfile in docker := {
+  val artifact: File     = assembly.value
+  val artifactTargetPath = s"/app/${artifact.name}"
+
+  new Dockerfile {
+    from("openjdk:11-jre")
+    add(artifact, artifactTargetPath)
+    env("TWICHER_DIR", "/data")
+    volume("/data")
+    entryPoint("java", "-jar", artifactTargetPath)
+  }
+}
+
+imageNames in docker := Seq(
+  ImageName(s"${organization.value}/${name.value}:latest"),
+  ImageName(
+    namespace = Some(organization.value),
+    repository = name.value,
+    tag = Some("v" + version.value)
+  )
+)
 
 libraryDependencies ++= Seq(
   "org.http4s"                 %% "http4s-blaze-server"            % Http4sVersion,
