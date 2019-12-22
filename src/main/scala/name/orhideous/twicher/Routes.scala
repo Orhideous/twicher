@@ -3,14 +3,17 @@ package name.orhideous.twicher
 import cats.effect.Sync
 import cats.implicits._
 import io.circe.generic.auto._
-import name.orhideous.twicher.persistence.QuotesAlgebra
 import org.http4s._
 import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 
-class Routes[F[_]: Sync](algebra: QuotesAlgebra[F]) extends Http4sDsl[F] {
+import name.orhideous.twicher.error.HttpErrorHandler
+import name.orhideous.twicher.persistence.QuotesAlgebra
 
-  val routes: HttpRoutes[F] = HttpRoutes.of[F] {
+class Routes[F[_]: Sync, E <: Throwable](algebra: QuotesAlgebra[F])(implicit H: HttpErrorHandler[F, E])
+    extends Http4sDsl[F] {
+
+  private val rawRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root =>
       algebra.list.flatMap(Ok(_))
 
@@ -20,8 +23,5 @@ class Routes[F[_]: Sync](algebra: QuotesAlgebra[F]) extends Http4sDsl[F] {
     case GET -> Root / IntVar(id) =>
       algebra.read(id).flatMap(Ok(_))
   }
-}
-
-object Routes {
-  def apply[F[_]: Sync](algebra: QuotesAlgebra[F]): HttpRoutes[F] = new Routes(algebra).routes
+  val routes: HttpRoutes[F] = H.handle(rawRoutes)
 }

@@ -6,6 +6,7 @@ val LogbackVersion          = "1.2.3"
 val BetterFilesVersion      = "3.8.0"
 val DirectoryWatcherVersion = "0.9.6"
 val ScalaLoggingVersion     = "3.9.2"
+val MeowMTLVersion          = "0.4.0"
 
 organization := "name.orhideous"
 name := "twicher"
@@ -43,6 +44,7 @@ libraryDependencies ++= Seq(
   "io.methvin"                 %% "directory-watcher-better-files" % DirectoryWatcherVersion,
   "com.typesafe.scala-logging" %% "scala-logging"                  % ScalaLoggingVersion,
   "ch.qos.logback"             % "logback-classic"                 % LogbackVersion,
+  "com.olegpy"                 %% "meow-mtl-core"                  % MeowMTLVersion,
   compilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3"),
   compilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.0")
 )
